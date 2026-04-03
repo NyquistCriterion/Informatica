@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1150px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f4f8;
+        }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; text-align: center; }
+        h2 { color: #2980b9; margin-top: 25px; border-left: 5px solid #3498db; padding-left: 15px; background: #eef7fd; }
+        p { margin-bottom: 10px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #dce4ec; }
+        code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; color: #d63384; }
+        pre { background: #282c34; color: #abb2bf; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 1.1em; line-height: 1.5; }
+        .comment { color: #5c6370; font-style: italic; }
+        .keyword { color: #c678dd; }
+        .string { color: #98c379; }
+        .func { color: #61afef; }
+        .val { color: #d19a66; }
+        .intro { background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-top: 4px solid #3498db; }
+    </style>
+</head>
+<body>
+
+    <h1>Basisprincipes Informatica</h1>
+    
+    <div class="grid">
+        <div class="card">
+            <h2>1. Variabelen</h2>
+            <p>In Python gebruik je een variabele om informatie te onthouden. Een variabele heeft een naam en een waarde.
+        Je <em>assigneert</em> (geeft) een waarde aan een naam met het <code>=</code> teken. 
+        Denk aan een variabele als een doosje met een label erop waar je iets in stopt.</p>
+            <pre>
+<span class="comment"># Toewijzing (assignatie) van een variabele a met waarde 2</span>
+a = <span class="val">2</span>
+
+<span class="comment"># Toewijzing (assignatie) van een variabele b met waarde 3</span>
+b = <span class="val">3</span>
+
+<span class="comment"># Toon de waarde in een variabele</span>
+print(a)  # Op het scherm verschijnt: 2</span>
+	    </pre>
+            <p><strong>Tip:</strong> Gebruik steeds duidelijke, korte namen voor variabelen. </p>
+        </div>
+
+
+        <div class="card">
+            <h2>2. Datatypes</h2>
+            <p>Elke waarde in Python heeft een <strong>type</strong>. Dit bepaalt wat je ermee kunt doen (bijv. rekenen met getallen of plakken met tekst). 
+            Denk aan een doos voor koeken en een doos voor boeken: allebei dozen maar met een verschillende functie.</p>
+            <pre>
+<span class="comment"># Integer (int): Gehele getallen</span>
+score = <span class="val">10</span>
+
+<span class="comment"># Float: Kommagetallen (gebruik een punt!)</span>
+prijs = <span class="val">19.95</span>
+
+<span class="comment"># String (str): Tekst, altijd tussen " " of ' '</span>
+naam = <span class="string">"Angela"</span>
+
+<span class="comment"># Boolean (bool): Waarheidsinstelling</span>
+is_gelukt = <span class="keyword">True</span>
+is_niet_gelukt = <span class="keyword">False</span></span>
+            </pre>
+            <p><strong>Tip:</strong> Een variabele zal automatisch herkennen welk type dit is. Verschillende types kan je niet zomaar combineren.
+            Een variabele omzetten van het ene naar het andere type heet typecasting en doe je met <code>int(variabele)</code>, <code>str(variabele)</code>, ...</p>
+        </div>
+     
+
+
+<div class="card">
+    <h2>3. Vergelijken</h2>
+
+    <p>Met vergelijkingsoperatoren kan je controleren of waarden gelijk zijn of niet. Vergelijkingen of <em>condities</em> geven altijd een boolean terug.</p>
+
+    <p><strong><code>a == b</code></strong> betekent: <em>Is a gelijk aan b?</em></p>
+    <p><strong><code>a != b</code></strong> betekent: <em>Is a niet gelijk aan b?</em></p>
+    <pre>
+x = <span class="val">5</span>
+
+print(x == <span class="val">5</span>)  
+<span class="comment"># True</span>
+
+print(x == <span class="val">3</span>)  
+<span class="comment"># False </span>
+
+print(x != <span class="val">5</span>)  
+<span class="comment"># False </span>
+
+print(x != <span class="val">3</span>)  
+<span class="comment"># True </span>
+
+print(x == <span class="val">'5'</span>)  
+<span class="comment"># False </span>
+</pre> 
+</div>
+
+        <div class="card">
+            <h2>4. Lists</h2>
+            <p>Een lijst gebruik je om meerdere variabelen in 1 datastructuur op te slaan. De volgorde van de variabelen is van belang.
+            Je kan een element opvragen door de lijst te <em>indexeren</em> op een positie. De lijst begint steeds te tellen vanaf positie <strong>0</strong>.</p>
+            <pre>
+<span class="comment"># Een lijst met drie strings:</span>
+kleuren = [<span class="string">"rood"</span>, <span class="string">"blauw"</span>, <span class="string">"groen"</span>]
+
+<span class="comment"># Het tweede element opvragen:</span>
+kleuren[<span class="string">0</span>] <span class="comment"># Op het scherm verschijnt: rood</span>
+
+<span class="comment"># Een lijst met opeenvolgende integers aanmaken</span>
+print(range(<span class="val">2</span>, <span class="val">6</span>)) <span class="comment"># Op het scherm verschijnt: [<span class="val">2</span>, <span class="val">3</span>, <span class="val">4</span>, <span class="val">5</span>]</span>
+        </div>
+
+
+        <div class="card">
+            <h2>5. Dictionaries</h2>
+            <p>Een dictionary gebruik je om meerdere variabelen in 1 datastructuur op te slaan. Elk element in de dictionary bestaat nu uit een <strong>sleutel (key)</strong> en een <strong>waarde (value)</strong>. Het type van de waarden en de volgorde van de sleutel-waardeparen maken niet uit.</p>
+            <pre>
+auto = {<span class="string">"merk"</span>: <span class="string">"Tesla"</span>, <span class="string">"jaar"</span>: <span class="val">2023</span>}
+
+<span class="comment"># Nieuwe sleutel/waarde toevoegen:</span>
+auto[<span class="string">"kleur"</span>] = <span class="string">"rood"</span>
+print(auto) <span class="comment"># Output: {"merk": Tesla, "jaar": 2023, "kleur": "rood"}</span>
+
+<span class="comment"># Waarde opvragen via de sleutel:</span>
+print(auto[<span class="string">"merk"</span>]) <span class="comment"># Output: Tesla</span>
+        </div>
+
+<div class="card">
+    <h2>6. De lus</h2>
+
+    <p><strong>For-loop met <code>range()</code>:</strong> gebruik je wanneer je iets een 
+    <em>bepaald aantal keer</em> wil herhalen. Python maakt automatisch een lijst van opeenvolgende getallen.</p>
+
+<pre>
+<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="val">0</span>, <span class="val">3</span>):
+    print(<span class="string">"Herhaling"</span>, i)
+
+<span class="comment"># range(0,3) maakt de getallen: 0, 1, 2
+# Output:
+# Herhaling 0
+# Herhaling 1
+# Herhaling 2</span>
+</pre>
+
+    <p><strong>For-loop met een lijst:</strong> gebruik je wanneer je 
+    <em>door bestaande data</em> wil gaan.</p>
+
+<pre>
+namen = [<span class="string">"Alice"</span>, <span class="string">"Bob"</span>, <span class="string">"Eve"</span>]
+
+<span class="keyword">for</span> naam <span class="keyword">in</span> namen:
+    print(<span class="string">"Hallo"</span>, naam)
+
+<span class="comment"># De nieuwe gedefinieerde variabele 'naam' wordt telkens een element uit de lijst
+# Output:
+# Hallo Alice
+# Hallo Bob
+# Hallo Eve</span>
+</pre>
+
+    <p><strong>While-loop:</strong> blijft herhalen zolang een voorwaarde <code>True</code> is.</p>
+
+<pre>
+energie = <span class="val">5</span>
+
+<span class="keyword">while</span> energie > <span class="val">0</span>:
+    print(<span class="string">"Ik werk nog..."</span>)
+    energie -= <span class="val">1</span>
+
+<span class="comment"># De lus stopt wanneer energie 0 wordt</span>
+</pre>
+</div>
+<div class="card">
+    <h2>7. Functies</h2>
+
+    <p>Wanneer je een stuk code wil groeperen, kan je een functie gebruiken. Een functie heeft soms een input die aan het begin wordt meegegeven. De code in een functie kan je oproepen wanneer of hoe vaak je wil. Pas wanneer je de functie oproept bepaal je de inputwaarden.</p>
+
+    <p>Hieronder zie je twee functies. <code>return</code> geeft een waarde terug zodat je die verder kan gebruiken, maar toont deze niet op het scherm. <code>print()</code> geeft geen waarde terug die je kan herbruiken, maar toont ze meteen op het scherm.</p>
+
+<pre>
+<span class="keyword">def</span> <span class="func">bereken_btw</span>(bedrag):
+    totaal = bedrag * <span class="val">1.21</span>
+    <span class="keyword">return</span> totaal
+
+factuur = bereken_btw(<span class="val">100</span>)
+print(factuur)
+
+<span class="comment"># Variabele 'factuur' bevat nu de waarde 121.0</span>
+<span class="comment"># Op het scherm verschijnt niets.</span>
+
+<span class="keyword">def</span> <span class="func">toon_btw</span>(bedrag):
+    totaal = bedrag * <span class="val">1.21</span>
+    print(totaal)
+
+resultaat = toon_btw(<span class="val">100</span>)
+
+
+<span class="comment"># Op het scherm verschijnt: 121
+# Variabele 'resultaat' is leeg want de functie gaf niets terug.</span>
+</pre>
+</div>
+
+<div class="card">
+    <h2>8. Recursie</h2>
+
+    <p>Wanneer een functie zichzelf opnieuw aanroept noemen we dit recursie.</p>
+    <p>Er moet altijd een <em>stopconditie (base case)</em> zijn. Anders roept hij zichzelf een onbepaald aantal keer op.</p>
+
+<pre>
+<span class="keyword">def</span> <span class="func">som_tot_nul</span>(n):
+    <span class="keyword">if</span> n == <span class="val">0</span>:
+        <span class="keyword">return</span> <span class="val">0</span>
+    <span class="keyword">else</span>:
+        <span class="keyword">return</span> n + som_tot_nul(n - <span class="val">1</span>)
+som_tot_nul(<span class="val">3</span>)
+
+<span class="comment"># Wat gebeurt er bij som_tot_nul(3)?
+
+som_tot_nul(3)
+= 3 + som_tot_nul(2)
+= 3 + (2 + som_tot_nul(1))
+= 3 + (2 + (1 + som_tot_nul(0)))
+= 3 + (2 + (1 + 0))
+= 6</span>
+</pre>
+
+</div>
+    <p style="text-align: center; color: #7f8c8d; margin-top: 30px;">
+        <em>Gemaakt door Andreas C. voor 6EW/WW. Vragen of opmerkingen meer dan welkom.</em>
+    </p>
+
+</body>
+</html>
