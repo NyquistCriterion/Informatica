@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Lab: Advanced Edition</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #0f1117; --surface: #181c27; --surface2: #1f2435; --surface3: #262d42;
+    --accent: #6ee7b7; --accent2: #818cf8; --text: #e2e8f0; --text2: #94a3b8;
+    --text3: #64748b; --border: rgba(255,255,255,0.08); --success: #34d399;
+    --error: #f87171; --radius: 10px; --radius-lg: 16px;
+    --font: 'Sora', sans-serif; --mono: 'JetBrains Mono', monospace;
+  }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; margin: 0; }
+  header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
+  .logo { font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+  .logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #000; }
+  .app { max-width: 950px; margin: 0 auto; padding: 2rem; }
+  .progress-bar-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 2rem; }
+  .progress-track { height: 10px; background: var(--surface3); border-radius: 99px; overflow: hidden; margin-top: 10px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); width: 0%; transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .exercise-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 15px; overflow: hidden; transition: transform 0.2s; }
+  .exercise-card.is-solved { border-color: rgba(110, 231, 183, 0.4); background: rgba(110, 231, 183, 0.02); }
+  .exercise-header { padding: 1.25rem 1.5rem; cursor: pointer; display: flex; align-items: center; gap: 15px; }
+  .ex-num { width: 32px; height: 32px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 13px; font-weight: 600; }
+  .is-solved .ex-num { background: var(--success); color: #064e3b; }
+  .exercise-body { display: none; padding: 1.5rem; border-top: 1px solid var(--border); background: rgba(0,0,0,0.15); }
+  .exercise-body.open { display: block; }
+  .exercise-desc { margin-bottom: 1.25rem; color: var(--text2); line-height: 1.7; white-space: pre-wrap; font-size: 0.95rem; }
+  .editor-wrap { background: #1a1a26; border-radius: var(--radius); overflow: hidden; margin-bottom: 1rem; border: 1px solid var(--border); }
+  textarea.code-input { width: 100%; min-height: 220px; background: transparent; color: #a6e22e; border: none; padding: 1.25rem; font-family: var(--mono); font-size: 13.5px; resize: vertical; outline: none; line-height: 1.6; }
+  .controls { display: flex; gap: 12px; margin-bottom: 1.25rem; }
+  .run-btn { background: var(--accent); color: #064e3b; border: none; padding: 12px 24px; border-radius: var(--radius); font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+  .reset-btn { background: transparent; color: var(--text3); border: 1px solid var(--border); padding: 10px 18px; border-radius: var(--radius); cursor: pointer; font-size: 0.85rem; }
+  .output-box { padding: 1.25rem; border-radius: var(--radius); font-family: var(--mono); font-size: 13px; background: #000; min-height: 50px; white-space: pre-wrap; border: 1px solid var(--border); line-height: 1.5; }
+  .success { color: var(--success); border-color: var(--success); background: rgba(52, 211, 153, 0.05); }
+  .error { color: var(--error); border-color: var(--error); background: rgba(248, 113, 113, 0.05); }
+  #who { display: none; align-items: center; gap: 10px; font-size: 12px; color: var(--text3); }
+  #naam { background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-family: var(--font); font-size: 13px; width: 190px; }
+  .badge { font-size: 10px; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; font-weight: 800; letter-spacing: 0.5px; }
+  .badge-for { background: #818cf8; color: #fff; }
+  .badge-while { background: #fbbf24; color: #000; }
+  .badge-logica { background: #34d399; color: #000; }
+  .badge-rec { background: #f472b6; color: #fff; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><div class="logo-icon"></div> Extra oefeningen Informatica 2026-2027</div>
+  <div id="who"><input id="naam" placeholder="Voornaam + naam" maxlength="60"><span id="send-status"></span></div>
+  <div id="py-status" style="font-size: 12px; color: var(--text3);">Systeem initialiseren...</div>
+</header>
+
+<div class="app">
+  <div class="progress-bar-wrap">
+    <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:600;">
+      <span>Jouw Voortgang</span>
+      <span id="progress-text">0 / 10 Voltooid</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    <div id="notice" style="display:none; margin-top:10px; font-size:12px; color:var(--text3);">Vul je naam in. Je voortgang wordt automatisch opgeslagen.</div>
+  </div>
+
+  <div id="exercise-list"></div>
+</div>
+
+<script>
+const exercises = [
+  // --- LOGICA & FUNCTIES (3) ---
+  {
+  type: "LOGICA",
+  title: "De Rollercoaster Check",
+  description: "Een kind mag in de attractie als:\n1. Het kind minstens 140 cm groot is.\n2. OF als het kind tussen de 120 cm en 140 cm is, maar wel begeleid wordt door een volwassene (begeleider == True).\n3. MAAR: Niemand groter dan 210 cm mag erin (veiligheid).\n\nSchrijf een functie `mag_erin(lengte, begeleider)` die True of False teruggeeft.",
+  starter: "def mag_erin(lengte, begeleider):\n    return False",
+  testCases: [
+    { input: "150, False", expected: true },
+    { input: "130, True", expected: true },
+    { input: "130, False", expected: false },
+    { input: "215, True", expected: false }
+  ]
+},
+{
+  type: "LOGICA",
+  title: "Wisselautomaat",
+  description: "Schrijf een functie `wisselgeld(bedrag)` die berekent hoe je een bedrag betaalt met zo min mogelijk eenheden.\nJe gebruikt: Briefjes van 5, munten van 2 en munten van 1.\n\nDe functie moet een tekst teruggeven in dit formaat:\n'B5: ... - M2: ... - M1: ...'",
+  starter: "def wisselgeld(bedrag):\n    pass",
+  testCases: [
+    { input: "13", expected: "B5: 2 - M2: 1 - M1: 1" },
+    { input: "4", expected: "B5: 0 - M2: 2 - M1: 0" },
+    { input: "9", expected: "B5: 1 - M2: 2 - M1: 0" }
+  ]
+},
+  {
+    type: "LOGICA",
+    title: "Anagram Checker",
+    description: "Schrijf een functie die checkt of twee woorden anagrammen zijn (dezelfde letters in een andere volgorde).",
+    starter: "def is_anagram(w1, w2):\n    return False",
+    testCases: [{ input: "'lepel', 'pelle'", expected: true }, { input: "'appel', 'peer'", expected: false }]
+  },
+  {
+    type: "LOGICA",
+    title: "Schaar, steen, papier",
+    description: "Steen wint van schaar, schaar wint van papier, papier wint van steen.\n\nSchrijf `winnaar(speler1, speler2)` met als invoer 'steen', 'schaar' of 'papier'. Geef 'speler 1', 'speler 2' of 'gelijk' terug.",
+    starter: "def winnaar(speler1, speler2):\n    pass",
+    testCases: [{ input: "'steen', 'schaar'", expected: "speler 1" }, { input: "'papier', 'schaar'", expected: "speler 2" }, { input: "'papier', 'papier'", expected: "gelijk" }, { input: "'steen', 'papier'", expected: "speler 2" }, { input: "'schaar', 'papier'", expected: "speler 1" }]
+  },
+  {
+    type: "LOGICA",
+    title: "Schrikkeljaar",
+    description: "Een jaar is een schrikkeljaar als het deelbaar is door 4. Maar: jaren die deelbaar zijn door 100 zijn géén schrikkeljaar, tenzij ze ook deelbaar zijn door 400.\n\nSchrijf `is_schrikkeljaar(jaar)` die True of False teruggeeft.",
+    starter: "def is_schrikkeljaar(jaar):\n    pass",
+    testCases: [{ input: "2024", expected: true }, { input: "2023", expected: false }, { input: "1900", expected: false }, { input: "2000", expected: true }, { input: "2100", expected: false }]
+  },
+  {
+    type: "LOGICA",
+    title: "Parkeerkost",
+    description: "De eerste 30 minuten parkeren zijn gratis. Daarna betaal je 1,50 euro per begonnen uur. Het maximum per dag is 10 euro.\n\nSchrijf `parkeerkost(minuten)` die het te betalen bedrag teruggeeft.\nVoorbeeld: 91 minuten = 61 minuten betalend = 2 begonnen uren = 3 euro.",
+    starter: "def parkeerkost(minuten):\n    pass\n",
+    testCases: [{ input: "20", expected: 0 }, { input: "30", expected: 0 }, { input: "31", expected: 1.5 }, { input: "90", expected: 1.5 }, { input: "91", expected: 3 }, { input: "240", expected: 6 }, { input: "500", expected: 10 }]
+  },
+  // --- FOR LOOPS ---
+  {
+    type: "FOR",
+    title: "Som van even getallen",
+    description: "Schrijf een functie `som_even(n)` die de som berekent van alle even getallen van 1 tot en met n.",
+    starter: "def som_even(n):\n    pass\n",
+    testCases: [
+      { input: "10", expected: 30 },
+      { input: "5", expected: 6 },
+      { input: "1", expected: 0 }
+    ]
+  },
+  {
+    type: "FOR",
+    title: "Cijfersom",
+    description: "Schrijf een functie `cijfersom(n)` die de som van alle cijfers van een positief geheel getal teruggeeft.\nVoorbeeld: 4821 geeft 4 + 8 + 2 + 1 = 15.\n",
+    starter: "def cijfersom(n):\n    pass",
+    testCases: [{ input: "4821", expected: 15 }, { input: "7", expected: 7 }, { input: "9999", expected: 36 }, { input: "100", expected: 1 }]
+  },
+  {
+    type: "FOR",
+    title: "Samengestelde interest",
+    description: "Je zet een bedrag `start` op een spaarrekening. Elk jaar komt er `rente` procent bij op het bedrag dat er dan staat (interest op interest).\n\nSchrijf `saldo_na(start, rente, jaren)` die het bedrag na het opgegeven aantal jaren teruggeeft, afgerond op 2 decimalen.",
+    starter: "def saldo_na(start, rente, jaren):\n    pass",
+    testCases: [{ input: "1000, 5, 4", expected: 1215.51 }, { input: "100, 10, 3", expected: 133.1 }, { input: "500, 2, 0", expected: 500 }]
+  },
+  {
+    type: "FOR",
+    title: "Fibonacci",
+    description: "De rij van Fibonacci begint met 0, 1, 1, 2, 3, 5, 8, 13, ... Elk getal is de som van de twee vorige.\n\nSchrijf `fibonacci(n)` die het n-de getal van de rij teruggeeft (fibonacci(0) = 0 en fibonacci(1) = 1).\n",
+    starter: "def fibonacci(n):\n    pass",
+    testCases: [{ input: "0", expected: 0 }, { input: "1", expected: 1 }, { input: "7", expected: 13 }, { input: "10", expected: 55 }, { input: "20", expected: 6765 }]
+  },
+  {
+    type: "FOR",
+    title: "Machtsverheffen",
+    description: "Schrijf `macht(grondtal, exponent)` die grondtal tot de macht exponent teruggeeft. Gebruik een for-lus en dus <b>niet</b> de operator `**`.\nExponent is een geheel getal van 0 of meer.",
+    starter: "def macht(grondtal, exponent):\n    pass",
+    testCases: [{ input: "2, 10", expected: 1024 }, { input: "5, 0", expected: 1 }, { input: "3, 3", expected: 27 }, { input: "7, 1", expected: 7 }]
+  },
+  {
+    type: "FOR",
+    title: "Klinkers tellen",
+    description: "Schrijf `aantal_klinkers(woord)` die teruggeeft hoeveel klinkers (a, e, i, o, u) er in het woord staan. Hoofdletters tellen ook mee.\n\nTip: je kan testen met `letter in 'aeiou'`.",
+    starter: "def aantal_klinkers(woord):\n    pass",
+    testCases: [{ input: "'Hallo'", expected: 2 }, { input: "'PYTHON'", expected: 1 }, { input: "'xyz'", expected: 0 }, { input: "'Ambulance'", expected: 4 }]
+  },
+  {
+    type: "FOR",
+    title: "Palindroom",
+    description: "Een palindroom leest van voor naar achter hetzelfde als van achter naar voor (zoals 'lepel'). Hoofdletters negeer je.\n\nSchrijf `is_palindroom(tekst)` die True of False teruggeeft.\n\n",
+    starter: "def is_palindroom(tekst):\n    pass",
+    testCases: [{ input: "'lepel'", expected: true }, { input: "'Racecar'", expected: true }, { input: "'python'", expected: false }, { input: "'a'", expected: true }]
+  },
+  {
+    type: "FOR",
+    title: "Streepjes tussen letters",
+    description: "Schrijf `met_streepjes(tekst)` die tussen alle letters een streepje zet, maar niet voor de eerste of na de laatste letter.\nVoorbeeld: 'abc' wordt 'a-b-c'.",
+    starter: "def met_streepjes(tekst):\n    pass",
+    testCases: [{ input: "'abc'", expected: "a-b-c" }, { input: "'x'", expected: "x" }, { input: "'python'", expected: "p-y-t-h-o-n" }, { input: "''", expected: "" }]
+  },
+  {
+    type: "FOR",
+    title: "Grootste gemene deler",
+    description: "Schrijf `ggd(a, b)` die het grootste getal teruggeeft waar zowel a als b deelbaar door zijn.\nVoorbeeld: ggd(12, 18) = 6.\n\n",
+    starter: "def ggd(a, b):\n    pass",
+    testCases: [{ input: "12, 18", expected: 6 }, { input: "7, 13", expected: 1 }, { input: "100, 75", expected: 25 }, { input: "5, 5", expected: 5 }]
+  },
+  {
+    type: "FOR",
+    title: "Piramide",
+    description: "Schrijf `piramide(n)` die een tekst teruggeeft met n regels (gescheiden door '\\n'). Regel 1 heeft 1 ster, regel 2 heeft 3 sterren, enz. Elke regel wordt links aangevuld met spaties zodat de piramide gecentreerd staat.\n\nVoorbeeld piramide(3):\n  *\n ***\n*****\n\n",
+    starter: "def piramide(n):\n    resultaat = ''\n    return resultaat",
+    testCases: [{ input: "1", expected: "*" }, { input: "3", expected: "  *\n ***\n*****" }, { input: "4", expected: "   *\n  ***\n *****\n*******" }]
+  },
+  {
+    type: "FOR",
+    title: "Perfecte getallen",
+    description: "Een getal is perfect als het gelijk is aan de som van zijn echte delers (alle delers behalve het getal zelf).\nVoorbeeld: 6 = 1 + 2 + 3.\n\nSchrijf `is_perfect(n)` die True of False teruggeeft.",
+    starter: "def is_perfect(n):\n    pass",
+    testCases: [{ input: "6", expected: true }, { input: "28", expected: true }, { input: "12", expected: false }, { input: "1", expected: false }, { input: "496", expected: true }]
+  },
+
+];
+
+// Plak hier de URL van de Google Apps Script web-app. Leeg laten = niets wordt doorgestuurd.
+const SEND_URL = 'https://script.google.com/macros/s/AKfycbzKFH0MQD0IXl_z3LplvbtStOTfdnkigAUdT-d7YzTjiL3CGNr0fJh59i53fC7msWX9vg/exec';
+let naam = localStorage.getItem('py_mastery_naam') || '';
+let solved = new Set();
+let pyodide = null;
+
+// STATE MANAGEMENT
+function loadState() {
+  const s = localStorage.getItem('py_mastery_solved');
+  if (s) solved = new Set(JSON.parse(s));
+}
+
+function render() {
+  const container = document.getElementById('exercise-list');
+  container.innerHTML = exercises.map((ex, i) => {
+    const savedCode = localStorage.getItem(`py_mastery_code_${i}`);
+    const displayCode = savedCode !== null ? savedCode : ex.starter;
+    const isSolved = solved.has(i);
+
+    // Formatteer de testcases naar een leesbare lijst
+    const testCasesHtml = ex.testCases.map(tc => 
+      `<code>input: ${tc.input} ➔ verwacht: ${JSON.stringify(tc.expected)}</code>`
+    ).join('<br>');
+
+    return `
+      <div class="exercise-card ${isSolved ? 'is-solved' : ''}">
+        <div class="exercise-header" onclick="toggleBody(${i})">
+          <div class="ex-num">${isSolved ? '✓' : i+1}</div>
+          <div style="flex:1;">
+            <span class="badge badge-${ex.type.toLowerCase()}">${ex.type}</span>
+            <span style="font-weight:700; margin-left:8px;">${ex.title}</span>
+          </div>
+          <span style="font-size:11px; font-weight:700; color:var(--text3)">${isSolved ? 'COMPLEET' : 'BEZIG'}</span>
+        </div>
+        <div class="exercise-body" id="body-${i}">
+          <div class="exercise-desc">${ex.description.replace(/\n/g, '<br>')}</div>
+          
+          <div class="test-preview">
+            <strong>Voorbeelden:</strong><br>
+            ${testCasesHtml}
+          </div>
+
+          <div class="editor-wrap">
+            <textarea class="code-input" id="code-${i}" oninput="localStorage.setItem('py_mastery_code_${i}', this.value)" spellcheck="false">${displayCode}</textarea>
+          </div>
+          <div class="controls">
+            <button class="run-btn" id="btn-${i}" onclick="runTest(${i})">▶ Code Uitvoeren</button>
+            <button class="reset-btn" onclick="resetEx(${i})">Reset naar begin</button>
+          </div>
+          <div class="output-box" id="out-${i}">Resultaten verschijnen hier na het uitvoeren...</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  updateProgress();
+}
+
+function toggleBody(i) { document.getElementById(`body-${i}`).classList.toggle('open'); }
+
+function resetEx(i) {
+  if(confirm("Wil je de code voor deze opdracht volledig wissen?")) {
+    localStorage.removeItem(`py_mastery_code_${i}`);
+    render();
+  }
+}
+
+// PYODIDE & TESTING
+async function initPyodide() {
+  const s = document.createElement('script');
+  s.src = "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js";
+  s.onload = async () => {
+    pyodide = await loadPyodide();
+    pyodide.runPython(`
+import sys
+def _guarded(expr):
+    n = [0]
+    def t(f, e, a):
+        n[0] += 1
+        if n[0] > 2000000: raise TimeoutError("Te lang bezig (oneindige lus?)")
+        return t
+    sys.settrace(t)
+    try: return eval(expr, globals())
+    finally: sys.settrace(None)
+`);
+    document.getElementById('py-status').textContent = "● Python Engine Online";
+    document.getElementById('py-status').style.color = "var(--success)";
+  };
+  document.head.appendChild(s);
+}
+
+async function runTest(i) {
+  const btn = document.getElementById(`btn-${i}`);
+  const out = document.getElementById(`out-${i}`);
+  const code = document.getElementById(`code-${i}`).value;
+  const ex = exercises[i];
+  if(!pyodide){ out.innerHTML = 'Python is nog aan het laden, even geduld...'; return; }
+  btn.disabled = true;
+  out.className = "output-box";
+  out.innerHTML = "⌛ Tests worden uitgevoerd...";
+
+  try {
+    await pyodide.runPythonAsync(code);
+    const funcName = ex.starter.match(/def\s+(\w+)/)[1];
+    let allPassed = true;
+    let feedback = [];
+
+    for(let tc of ex.testCases) {
+      const res = pyodide.globals.get('_guarded')(`${funcName}(${tc.input})`);
+      const resJs = (res && res.toJs) ? res.toJs() : res;
+      
+      // Deep compare for lists/objects
+      const ok = JSON.stringify(resJs) === JSON.stringify(tc.expected);
+      
+      feedback.push(ok 
+        ? `<span style="color:var(--success)">✅ Test geslaagd voor: ${tc.input}</span>` 
+        : `<span style="color:var(--error)">❌ Test mislukt voor: ${tc.input}</span>\n   Verwachtte: ${JSON.stringify(tc.expected)}\n   Kreeg: ${JSON.stringify(resJs)}`);
+      
+      if(!ok) allPassed = false;
+    }
+
+    out.innerHTML = feedback.join('\n\n');
+    if(allPassed) {
+      out.classList.add('success');
+      solved.add(i);
+      localStorage.setItem('py_mastery_solved', JSON.stringify(Array.from(solved)));
+      updateProgress();
+      sendProgress();
+    } else {
+      out.classList.add('error');
+    }
+  } catch(e) {
+    out.innerHTML = `<span style="color:var(--error)">⚠️ Python Error:</span>\n${e.message}`;
+    out.classList.add('error');
+  }
+  btn.disabled = false;
+}
+
+function sendProgress() {
+  if (!SEND_URL) return;
+  const st = document.getElementById('send-status');
+  if (!naam) { st.textContent = '⚠ Vul je naam in om je voortgang door te sturen'; return; }
+  fetch(SEND_URL, {
+    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ naam: naam, totaal: solved.size, opgelost: Array.from(solved).map(i => i + 1).sort((a, b) => a - b) })
+  }).then(() => { st.textContent = '✓ Voortgang doorgestuurd'; })
+    .catch(() => { st.textContent = '⚠ Doorsturen mislukt, probeer opnieuw'; });
+}
+
+function updateProgress() {
+  const p = (solved.size / exercises.length) * 100;
+  const fill = document.getElementById('progress-fill');
+  const txt = document.getElementById('progress-text');
+  if(fill) fill.style.width = p + '%';
+  if(txt) txt.textContent = `${solved.size} / ${exercises.length} Opgelost`;
+}
+
+loadState();
+initPyodide();
+render();
+if (SEND_URL) {
+  const inp = document.getElementById('naam');
+  document.getElementById('who').style.display = 'flex';
+  document.getElementById('notice').style.display = 'block';
+  inp.value = naam;
+  inp.addEventListener('change', () => {
+    naam = inp.value.trim();
+    localStorage.setItem('py_mastery_naam', naam);
+    if (naam && solved.size) sendProgress();
+  });
+}
+</script>
+</body>
+</html>
